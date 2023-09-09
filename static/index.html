@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <title>Monitoramento de Saúde Corporal</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="chart.js"></script>
+    <script src="script.js"></script>
+</head>
+<body>
+    <header class="navbar navbar-dark bg-dark">
+        <div class="container">
+            <h1 class="navbar-brand">SMC - Monitoramento de Saúde Corporal </h1>
+        </div>
+    </header>
+    <main class="container mt-4">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">Temperatura</h2>
+                        <p class="card-text" id="heartRate">0 BPM</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">Umidade (SpO2)</h2>
+                        <p class="card-text" id="spo2">0%</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">Pressao (hPa)</h2>
+                        <p class="card-text" id="hPa">0%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+         <!-- Gráfico -->
+         <div class="row">
+            <div class="col-md-6">
+                <div class="cardGraf">
+                    <div class="card-body">
+                        <canvas id="myChart" width="350" height="120"></canvas> 
+                    </div>
+                </div>
+            </div> 
+            <div class="col-md-6">
+                <div class="cardGraf">
+                    <div class="card-body">   
+                        <canvas id="pieChart" width="350" height="120"></canvas> <!-- Gráfico de pizza -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Espaço entre gráficos e rodapé -->
+    <div class="spacer"></div>
+
+    <!-- Rodapé com cor de fundo escura e texto branco -->
+    <footer class="footer bg-dark">
+        <div class="container text-center">
+            <p class="text-white">&copy; 2023 SMS Monitoroamento de Saúde Corporal</p>
+        </div>
+    </footer>
+    
+    <!-- Elemento de mensagem centralizada (inicialmente oculto) -->
+    <div id="alertMessage" class="alert-message hidden">
+        <div class="popup">
+            <p id="alertText"></p>
+            <button type="button" id="closeButton" class="close-button" onclick="redirectToHome()">Fechar</button>
+            <button type="button" id="loginButton">Login</button>
+            <button type="button" class="list-button" onclick="showHeartRateList()">Lista de Batimentos</button>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

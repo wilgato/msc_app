@@ -1,6 +1,72 @@
+// Variáveis globais para os gráficos
+var barChart;
+var pieChart;
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Crie o gráfico de barras inicialmente
+    createBarChart([0, 0, 0]);
+
+    // Crie o gráfico de pizza inicialmente
+    createPieChart([0, 0, 0]);
+
+    // Atualize a dashboard a cada 5 segundos (simulação)
+    setInterval(updateDashboard, 5000);
+
+    // Inicialize a dashboard
+    updateDashboard();
+});
+
+// Função para criar o gráfico de barras
+function createBarChart(data) {
+    var ctx = document.getElementById('myChart').getContext('2d');
+    barChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Temperatura', 'Umidade', 'Pressão'],
+            datasets: [{
+                label: 'Valores',
+                data: data,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: false, // Impede que o gráfico se ajuste automaticamente
+            maintainAspectRatio: false, // Impede que o aspect ratio seja mantido
+            // Defina o tamanho desejado para o gráfico aqui
+            width: 300,
+            height: 100,
+            // ...
+        }
+    });
+}
+
+// Função para criar o gráfico de pizza
+function createPieChart(data) {
+    var ctx = document.getElementById('pieChart').getContext('2d');
+    pieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Temperatura', 'Umidade', 'Pressão'],
+            datasets: [{
+                label: 'Valores',
+                data: data,
+                backgroundColor: ['red', 'green', 'blue'],
+                borderColor: ['red', 'green', 'blue'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: false,
+        }
+    });
+}
+
 // Simulando dados
 function generateRandomData() {
-    const heartRate = Math.floor(Math.random() * (100 - 60) + 60); // BPM
+    const heartRate = Math.floor(Math.random() * (100 - 60) + 60); // BPM  Math.floor retorna o menor numero inteiro x
     const spo2 = Math.floor(Math.random() * (100 - 90) + 90); // SpO2
     const hPa = Math.floor(Math.random() * (100 - 95) + 95); // hPa
 
@@ -48,6 +114,7 @@ function addToMessageLog(message) {
     messageLog.appendChild(listItem);
 }
 
+// Função para atualizar a dashboard
 function updateDashboard() {
     const { heartRate, spo2, hPa } = generateRandomData();
 
@@ -55,6 +122,15 @@ function updateDashboard() {
     document.getElementById('heartRate').textContent = `${heartRate} BPM`;
     document.getElementById('spo2').textContent = `${spo2}%`;
     document.getElementById('hPa').textContent = `${hPa}%`;
+
+    // Atualize o gráfico de barras
+    barChart.data.datasets[0].data = [heartRate, spo2, hPa];
+    barChart.update();
+
+    // Atualize o gráfico de pizza
+    pieChart.data.datasets[0].data = [heartRate, spo2, hPa];
+    pieChart.update();
+
 
     // Verifica a temperatura cardíaca e exibe mensagens de alerta
     if (heartRate >= 50 && heartRate < 60) {
@@ -89,56 +165,42 @@ function updateDashboard() {
         addToMessageLog(message);
     }
 
+
     // Adicione um timestamp às etiquetas (opcional)
     const timestamp = new Date().toLocaleTimeString();
     chart.data.labels.push(timestamp);
     
     // Adicione a frequência cardíaca aos dados do gráfico
-    chart.data.datasets[0].data.push(heartRate);
+    /*chart.data.datasets[0].data.push(heartRate); */
     
+     // Adicione a temperatura aos dados do gráfico de linha
+     chart.data.datasets[0].data.push(heartRate);
+    
+     // Adicione a umidade aos dados do gráfico de linha
+     chart.data.datasets[1].data.push(spo2);
+ 
+     // Adicione a pressão aos dados do gráfico de linha
+     chart.data.datasets[2].data.push(hPa);
+ 
+
     // Limite o número de pontos no gráfico (opcional)
     const maxDataPoints = 10; // Por exemplo, limite a 10 pontos
     if (chart.data.labels.length > maxDataPoints) {
         chart.data.labels.shift();
         chart.data.datasets[0].data.shift();
     }
-    
-    chart.update(); // Atualiza o gráfico
-    document.getElementById('heartRate').textContent = `${heartRate} BPM`;
-    document.getElementById('spo2').textContent = `${spo2}%`;
-    document.getElementById('hPa').textContent = `${hPa}%`;
-}
 
-// Crie um gráfico de barras
-var ctx = document.getElementById('myChart').getContext('2d');
-var myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5'],
-        datasets: [{
-            label: 'Valores',
-            data: [12, 19, 3, 5, 2], // Substitua com seus próprios dados
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: false, // Impede que o gráfico se ajuste automaticamente
-        maintainAspectRatio: false, // Impede que o aspect ratio seja mantido
-        // Defina o tamanho desejado para o gráfico aqui
-        width: 300,
-        height: 100,
-        // ...
-    }
-});
+    chart.update(); // Atualiza o gráfico
+
+}
+/*
 
 // Gráfico de pizza
 var ctxPie = document.getElementById('pieChart').getContext('2d');
 var pieChart = new Chart(ctxPie, {
     type: 'pie',
     data: {
-        labels: ['Label A', 'Label B', 'Label C'],
+        labels: ['Temperatura', 'Umidade', 'Pressão'],
         datasets: [{
             label: 'Valores',
             data: [30, 50, 20], // Substitua com seus próprios dados
@@ -155,6 +217,7 @@ var pieChart = new Chart(ctxPie, {
     }
 });
 
+*/
 // Atualiza a dashboard a cada 5 segundos (simulação)
 setInterval(updateDashboard, 5000);
 

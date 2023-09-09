@@ -193,31 +193,29 @@ function updateDashboard() {
     chart.update(); // Atualiza o gráfico
 
 }
-/*
 
-// Gráfico de pizza
-var ctxPie = document.getElementById('pieChart').getContext('2d');
-var pieChart = new Chart(ctxPie, {
-    type: 'pie',
-    data: {
-        labels: ['Temperatura', 'Umidade', 'Pressão'],
-        datasets: [{
-            label: 'Valores',
-            data: [30, 50, 20], // Substitua com seus próprios dados
-            backgroundColor: ['red', 'green', 'blue'] // Cores das fatias
-        }]
-    },
-    options: {
-        responsive: false, // Impede que o gráfico se ajuste automaticamente
-        maintainAspectRatio: false, // Impede que o aspect ratio seja mantido
-        // Defina o tamanho desejado para o gráfico aqui
-        width: 300,
-        height: 100,
-        // ...
+function loadPatientData() {
+    const selectedPatient = document.getElementById('patientSelect').value;
+
+    // Simule a obtenção de dados do paciente a partir de alguma fonte (por exemplo, um banco de dados)
+    let patientData;
+    if (selectedPatient === 'patient1') {
+        patientData = [/* Dados do paciente 1 */];
+    } else if (selectedPatient === 'patient2') {
+        patientData = [/* Dados do paciente 2 */];
     }
-});
+    // Adicione mais casos conforme necessário
 
-*/
+    updateCharts(patientData);
+}
+
+function updateCharts(patientData) {
+    barChart.data.datasets[0].data = patientData;
+    pieChart.data.datasets[0].data = patientData;
+    barChart.update();
+    pieChart.update();
+}
+
 // Atualiza a dashboard a cada 5 segundos (simulação)
 setInterval(updateDashboard, 5000);
 

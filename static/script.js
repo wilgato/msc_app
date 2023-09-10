@@ -16,6 +16,15 @@ document.addEventListener("DOMContentLoaded", function () {
     updateDashboard();
 });
 
+const sensorDataList = [
+    { temperatura: 25.5, spo2: 95, hPa: 1013 },
+    { temperatura: 26.0, spo2: 96, hPa: 1014 },
+    { temperatura: 25.8, spo2: 94, hPa: 1012 },
+];
+
+// Chamada da função para exibir a lista de dados do sensor
+showSensorDataList(sensorDataList);
+
 // Função para criar o gráfico de barras
 function createBarChart(data) {
     var ctx = document.getElementById('myChart').getContext('2d');
@@ -91,9 +100,22 @@ function hideAlertMessage() {
     alertMessage.classList.add('hidden');
 }
 
+/*
 function showHeartRateList() {
     const heartRateList = "Lista de Batimentos:\n\nBatimento 1\nBatimento 2\nBatimento 3";
     showAlertMessage(heartRateList);
+}
+*/
+
+function showSensorDataList(dataList) {
+    let message = "Lista de Dados do Sensor:\n\n";
+    dataList.forEach((data, index) => {
+        message += `Leitura ${index + 1}:\n`;
+        message += `Temperatura: ${data.temperatura}°C\n`;
+        message += `Umidade (SpO2): ${data.spo2}%\n`;
+        message += `Pressão (hPa): ${data.hPa} hPa\n\n`;
+    });
+    showAlertMessage(message);
 }
 
 function redirectToHome() {
@@ -166,21 +188,32 @@ function updateDashboard() {
     }
 
 
+    
     // Adicione um timestamp às etiquetas (opcional)
     const timestamp = new Date().toLocaleTimeString();
-    chart.data.labels.push(timestamp);
-    
-    // Adicione a frequência cardíaca aos dados do gráfico
-    /*chart.data.datasets[0].data.push(heartRate); */
-    
-     // Adicione a temperatura aos dados do gráfico de linha
-     chart.data.datasets[0].data.push(heartRate);
-    
-     // Adicione a umidade aos dados do gráfico de linha
-     chart.data.datasets[1].data.push(spo2);
- 
-     // Adicione a pressão aos dados do gráfico de linha
-     chart.data.datasets[2].data.push(hPa);
+
+    // Limite o número de pontos no gráfico (opcional)
+    const maxDataPoints = 10; // Por exemplo, limite a 10 pontos
+    if (barChart.data.labels.length >= maxDataPoints) {
+        barChart.data.labels.shift();
+        pieChart.data.labels.shift();
+    }
+
+    barChart.data.labels.push(timestamp);
+    pieChart.data.labels.push(timestamp);
+
+    // Atualize os gráficos de linha
+    barChart.data.datasets[0].data.push(heartRate);
+    barChart.data.datasets[1].data.push(spo2);
+    barChart.data.datasets[2].data.push(hPa);
+
+    pieChart.data.datasets[0].data.push(heartRate);
+    pieChart.data.datasets[1].data.push(spo2);
+    pieChart.data.datasets[2].data.push(hPa);
+
+    barChart.update(); // Atualiza o gráfico de barras
+    pieChart.update(); // Atualiza o gráfico de pizza
+    }
  
 
     // Limite o número de pontos no gráfico (opcional)
@@ -192,29 +225,61 @@ function updateDashboard() {
 
     chart.update(); // Atualiza o gráfico
 
-}
+
 
 function loadPatientData() {
     const selectedPatient = document.getElementById('patientSelect').value;
 
     // Simule a obtenção de dados do paciente a partir de alguma fonte (por exemplo, um banco de dados)
-    let patientData;
-    if (selectedPatient === 'patient1') {
-        patientData = [/* Dados do paciente 1 */];
-    } else if (selectedPatient === 'patient2') {
-        patientData = [/* Dados do paciente 2 */];
-    }
-    // Adicione mais casos conforme necessário
+    let patientData = [];
 
+    // Adicione os dados do paciente selecionado
+    if (selectedPatient === 'patient1') {
+        patientData = [
+            { temperatura: 25.5, spo2: 95, hPa: 1013 },
+            { temperatura: 26.0, spo2: 96, hPa: 1014 },
+            { temperatura: 25.8, spo2: 94, hPa: 1012 },
+        ];
+    } else if (selectedPatient === 'patient2') {
+        patientData = [
+            { temperatura: 27.0, spo2: 97, hPa: 1012 },
+            { temperatura: 26.5, spo2: 98, hPa: 1013 },
+            { temperatura: 25.9, spo2: 96, hPa: 1011 },
+        ];
+    }
+
+    // Chame a função para atualizar os gráficos
     updateCharts(patientData);
 }
 
+
 function updateCharts(patientData) {
-    barChart.data.datasets[0].data = patientData;
-    pieChart.data.datasets[0].data = patientData;
-    barChart.update();
-    pieChart.update();
+    if (patientData.length > 0) {
+        const temperatures = patientData.map(data => data.temperatura);
+        const spo2Values = patientData.map(data => data.spo2);
+        const hPaValues = patientData.map(data => data.hPa);
+
+        // Atualize o gráfico de barras
+        barChart.data.datasets[0].data = temperatures;
+        barChart.data.datasets[1].data = spo2Values;
+        barChart.data.datasets[2].data = hPaValues;
+        barChart.update();
+
+        // Atualize o gráfico de pizza
+        pieChart.data.datasets[0].data = temperatures;
+        pieChart.data.datasets[1].data = spo2Values;
+        pieChart.data.datasets[2].data = hPaValues;
+        pieChart.update();
+    }
 }
+
+
+// Event listener para o elemento <select> com id 'patientSelect'
+document.getElementById('patientSelect').addEventListener('change', function () {
+    // Carregue os dados do paciente selecionado
+    loadPatientData();
+});
+
 
 // Atualiza a dashboard a cada 5 segundos (simulação)
 setInterval(updateDashboard, 5000);

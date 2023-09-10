@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="styles.css">
-    <title>Monitoramento de Saúde Corporal</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="chart.js"></script>
-    <script src="script.js"></script>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+       
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <link rel="stylesheet" href="styles.css">
+        <title>Monitoramento de Saúde Corporal</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="chart.js"></script>
+        <script src="script.js"></script>
+    </head>
 <body>
     <header class="navbar navbar-dark bg-dark">
         <div class="container">
@@ -89,8 +93,8 @@
     <div id="alertMessage" class="alert-message hidden">
         <div class="popup">
             <p id="alertText"></p>
-            <button type="button" id="closeButton" class="close-button" onclick="redirectToHome()">Fechar</button>
-            <button type="button" id="loginButton">Login</button>
+            <button type="button" id="closeButton" class="close-button" onclick="closeMessagePanel()">Fechar</button>
+            <button type="button" id="loginButton" onclick="redirectToLogin()">Login</button>
             <button type="button" class="list-button" onclick="showHeartRateList()">Lista de Batimentos</button>
         </div>
     </div>

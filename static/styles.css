@@ -238,3 +238,7 @@ li {
 #loginButton:hover {
     background-color: #00b32d; /* Cor de fundo mais escura ao passar o mouse */
 }
+
+.hidden {
+    display: none;
+}

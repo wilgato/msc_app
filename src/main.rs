@@ -1,7 +1,7 @@
 use warp::Filter;
 
-// Função assíncrona que inicia o servidor
-async fn start_server() {
+#[tokio::main]
+async fn main() {
     // Rota para servir arquivos estáticos a partir da pasta 'static'
     let static_files = warp::fs::dir("static");
 
@@ -13,17 +13,17 @@ async fn start_server() {
     let log_route = warp::path("log")
         .and(warp::fs::file("static/log.html"));
 
-    // Combine as rotas
-    let routes = static_files.or(index_route).or(log_route);
+    // Rota para servir 'inicio.html' da pasta 'static' quando '/inicio' for acessada
+    let inicio_route = warp::path("inicio")
+        .and(warp::fs::file("static/inicio.html"));
 
-    warp::serve(routes).run(([127, 0, 0, 1], 3030)).await;
-}
+    // Combine as rotas, incluindo a rota para 'inicio.html'
+    let routes = static_files
+        .or(index_route)
+        .or(log_route)
+        .or(inicio_route);
 
-fn main() {
-    tokio::runtime::Builder::new_multi_thread()
-        .worker_threads(2)
-        .enable_all()
-        .build()
-        .unwrap()
-        .block_on(start_server());
+    warp::serve(routes)
+        .run(([127, 0, 0, 1], 3030))
+        .await;
 }

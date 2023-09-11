@@ -16,25 +16,25 @@ document.addEventListener("DOMContentLoaded", function () {
     // Inicialize a dashboard
     updateDashboard();
 
-    // Adicione um evento de clique ao link "Paciente 1"
-    const paciente1Link = document.querySelector('a[data-value="patient1"]');
-    if (paciente1Link) {
-        paciente1Link.addEventListener('click', function (event) {
-            event.preventDefault(); // Evita o comportamento padrão do link
-            // Redireciona para index.html com o parâmetro 'patient' definido como 'patient1'
-            window.location.href = 'index.html?patient=patient1';
-        });
-    }
+   // Adicione um evento de clique ao link "Paciente 1"
+   const paciente1Link = document.querySelector('a[data-value="patient1"]');
+   if (paciente1Link) {
+       paciente1Link.addEventListener('click', function (event) {
+           event.preventDefault(); // Evita o comportamento padrão do link
+           // Redireciona para inicio.html com o parâmetro 'patient' definido como 'patient1'
+           window.location.href = 'inicio.html?patient=patient1';
+       });
+   }
 
-    // Adicione um evento de clique ao link "Paciente 2" (se necessário)
-    const paciente2Link = document.querySelector('a[data-value="patient2"]');
-    if (paciente2Link) {
-        paciente2Link.addEventListener('click', function (event) {
-            event.preventDefault();
-            // Redireciona para index.html com o parâmetro 'patient' definido como 'patient2'
-            window.location.href = 'index.html?patient=patient2';
-        });
-    }
+   // Adicione um evento de clique ao link "Paciente 2" (se necessário)
+   const paciente2Link = document.querySelector('a[data-value="patient2"]');
+   if (paciente2Link) {
+       paciente2Link.addEventListener('click', function (event) {
+           event.preventDefault();
+           // Redireciona para inicio.html com o parâmetro 'patient' definido como 'patient2'
+           window.location.href = 'inicio.html?patient=patient2';
+       });
+   }
 });
 
 const sensorDataList = [

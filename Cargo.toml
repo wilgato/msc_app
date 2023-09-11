@@ -7,5 +7,6 @@ edition = "2021"
 [dependencies]
 warp = "0.3"
 tokio = { version = "1", features = ["full"] }
-rusqlite = "0.25" # A versão pode variar, verifique a versão mais recente no crates.io
-
+rusqlite = "0.29.0" # A versão pode variar, verifique a versão mais recente no crates.io
+rocket_okapi = "0.5.0"
+devise_core = "0.4.1"  # Use a versão mais recente compatível

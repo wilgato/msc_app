@@ -23,7 +23,17 @@ async fn main() {
         .or(log_route)
         .or(inicio_route);
 
+    // Endereço IP e porta
+    let addr = ([127, 0, 0, 1], 8000); // Alterado para a porta 8000
+
+    // Converter o endereço IP em uma string
+    let ip_str = format!("{}.{}.{}.{}", addr.0[0], addr.0[1], addr.0[2], addr.0[3]);
+
+    // Imprimir o endereço IP e a porta
+    println!("Server started at http://{}:{}/", ip_str, addr.1);
+
+    // Iniciar o servidor
     warp::serve(routes)
-        .run(([127, 0, 0, 1], 3030))
+        .run(addr)
         .await;
 }

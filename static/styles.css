@@ -242,3 +242,23 @@ li {
 .hidden {
     display: none;
 }
+
+/* Estilize o corpo e o HTML para ocupar toda a altura da janela */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Use CSS Grid para centralizar o conteúdo */
+.center-content {
+    display: grid;
+    place-items: center;
+    height: 100%;
+}
+
+/* Estilize a imagem (ajuste o tamanho e a largura conforme necessário) */
+img {
+    max-width: 100%;
+    max-height: 100%;
+}

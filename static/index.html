@@ -27,19 +27,13 @@
         </script>
     
         <!-- Conteúdo da Página -->
-    <div id="content-placeholder"></div>
-    <script>
-        fetch('content.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('content-placeholder').innerHTML = data;
-                
-                // Chame a função para criar os gráficos após inserir o conteúdo
-                createBarChart(); // Certifique-se de que a função createCharts() esteja definida em script.js
-                createPieChart();
-                updateDashboard();
-            });
-    </script>
+        <body>
+            <!-- Use a classe 'center-content' para centralizar o conteúdo -->
+            <div class="center-content">
+                <!-- Coloque a imagem aqui com a classe 'centered-image' -->
+                <img src="img/iot_medicina.jpeg" alt="Imagem Centralizada" class="centered-image">
+            </div>
+        </body>
 
     
         <!-- Inclua o rodapé -->

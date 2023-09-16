@@ -291,6 +291,39 @@ function loadPatientData() {
     updatePatientDataUI(patientData);
 }
 
+// Função para carregar a lista de pacientes do banco de dados
+function carregarListaDePacientes() {
+    // Fazer uma solicitação AJAX para buscar a lista de pacientes do servidor
+    fetch('/api/pacientes') // Substitua pela rota correta que busca pacientes no seu servidor
+        .then(response => response.json())
+        .then(data => {
+            // Preencher o seletor de pacientes com os dados obtidos
+            const selectElement = document.getElementById('patientSelect');
+
+            data.forEach(paciente => {
+                const option = document.createElement('option');
+                option.value = paciente.id;
+                option.textContent = paciente.nome;
+                selectElement.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao buscar lista de pacientes:', error);
+        });
+}
+
+// Função para preencher o seletor de pacientes com a lista carregada
+function preencherSeletorDePacientes() {
+    const pacientes = carregarListaDePacientes();
+    const selectElement = document.getElementById('patientSelect');
+
+    pacientes.forEach(paciente => {
+        const option = document.createElement('option');
+        option.value = paciente.id;
+        option.textContent = paciente.nome;
+        selectElement.appendChild(option);
+    });
+}
 // Função para atualizar os dados do paciente na interface do usuário
 function updatePatientDataUI(data) {
     const patientDataTable = document.getElementById('patientDataTable');
@@ -348,3 +381,104 @@ function updatePatientDataUI(data) {
 
 // Atualize a dashboard inicialmente
 updateDashboard();
+
+// Função para buscar dados do servidor e preencher a tabela
+function updateDataListFromDatabase() {
+    // Faça uma solicitação AJAX para o servidor
+    $.ajax({
+        url: 'http://127.0.0.1:3306//api/dados_sensor1', // Substitua com o URL do seu servidor
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            // Limpe a tabela antes de adicionar novos dados
+            $('#dataList').empty();
+
+            // Itere sobre os dados recebidos do servidor
+            for (var i = 0; i < data.length; i++) {
+                var rowData = data[i];
+                // Crie uma nova linha na tabela
+                var row = $('<tr>');
+                row.append('<th scope="row">' + (i + 1) + '</th>');
+                row.append('<td>' + rowData.temperatura + '°C</td>');
+                row.append('<td>' + rowData.umidade + '%</td>');
+                row.append('<td>' + rowData.pressao + 'hPa</td>');
+                row.append('<td>' + rowData.data_hora + '</td>');
+                // Adicione a linha à tabela
+                $('#dataList').append(row);
+            }
+        },
+        error: function (error) {
+            console.error('Erro ao buscar dados do servidor: ' + error);
+        }
+    });
+}
+
+function fillDataTable(data) {
+    // Encontre o elemento da tabela onde deseja preencher os dados
+    const dataListTable = document.getElementById('dataList');
+
+    // Limpe a tabela
+    dataListTable.innerHTML = '';
+
+    // Preencha a tabela com os dados recebidos do servidor
+    data.forEach((item, index) => {
+        const row = dataListTable.insertRow(index);
+        const cell1 = row.insertCell(0);
+        const cell2 = row.insertCell(1);
+        const cell3 = row.insertCell(2);
+        const cell4 = row.insertCell(3);
+        const cell5 = row.insertCell(4);
+
+        cell1.textContent = item.id;
+        cell2.textContent = item.temperatura + ' °C';
+        cell3.textContent = item.umidade + ' %';
+        cell4.textContent = item.pressao + ' hPa';
+        cell5.textContent = item.postingTime;
+    });
+}
+
+function fillDataTable(data) {
+    // Encontre o elemento da tabela onde deseja preencher os dados
+    const dataListTable = document.getElementById('dataList');
+
+    // Limpe a tabela
+    dataListTable.innerHTML = '';
+
+    // Preencha a tabela com os dados recebidos do servidor
+    data.forEach((item, index) => {
+        const row = dataListTable.insertRow(index);
+        
+        // Coluna de ID
+        const cell1 = row.insertCell(0);
+        cell1.textContent = item.id;
+
+        // Coluna de Temperatura
+        const cell2 = row.insertCell(1);
+        cell2.textContent = item.temperatura.toFixed(2) + ' °C'; // Arredonde a temperatura para 2 casas decimais
+
+        // Coluna de Umidade
+        const cell3 = row.insertCell(2);
+        cell3.textContent = item.umidade.toFixed(2) + ' %'; // Arredonde a umidade para 2 casas decimais
+
+        // Coluna de Pressão
+        const cell4 = row.insertCell(3);
+        cell4.textContent = item.pressao.toFixed(2) + ' hPa'; // Arredonde a pressão para 2 casas decimais
+
+        // Coluna de Data e Hora
+        const cell5 = row.insertCell(4);
+        cell5.textContent = item.postingTime;
+    });
+}
+
+
+// Função principal que será executada quando a página carregar
+function main() {
+    // Chame a função para preencher o seletor de pacientes
+    preencherSeletorDePacientes();
+    // Chame a função para carregar a lista de pacientes
+    carregarListaDePacientes();
+}
+
+// Registre o evento "DOMContentLoaded" para chamar a função principal quando a página carregar
+document.addEventListener('DOMContentLoaded', main);
+

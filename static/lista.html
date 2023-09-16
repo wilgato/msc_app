@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="css/styles.css">
     <title>Lista de Dados</title>
 </head>
@@ -22,16 +19,23 @@
     </script>
 
     <!-- Conteúdo da Página -->
-    <!-- Conteúdo da Página -->
-    <div id="content-placeholder"></div>
-    <script>
-        fetch('content_list.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('content-placeholder').innerHTML = data;
-   
-            });
-    </script>
+    <div class="container mt-5">
+        <h1>Lista de Dados</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Temperatura (°C)</th>
+                    <th scope="col">Umidade (%)</th>
+                    <th scope="col">Pressão (hPa)</th>
+                    <th scope="col">Data e Hora</th>
+                </tr>
+            </thead>
+            <tbody id="dataList">
+                <!-- Os dados serão inseridos aqui dinamicamente -->
+            </tbody>
+        </table>
+    </div>
 
     <!-- Inclua o rodapé -->
     <div id="footer-placeholder"></div>
@@ -43,8 +47,23 @@
             });
     </script>
 
+    <!-- Elemento de mensagem centralizada (inicialmente oculto) -->
+    <div id="alertMessage" class="alert-message hidden">
+        <div class="popup">
+            <p id="alertText"></p>
+            <button type="button" id="closeButton" class="close-button" onclick="closeMessagePanel()">Fechar</button>
+            <button type="button" id="loginButton" onclick="redirectToLogin()">Login</button>
+            <button type="button" class="list-button" onclick="redirectToLista()">Lista de Batimentos</button>
+        </div>
+    </div>
+
+    <!-- JavaScript para carregar e exibir dados -->
+    <script src="js/script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+
+    <!-- Chame a função para buscar e preencher os dados na tabela -->
     <script>
-        
         // Atualize a lista de dados do banco de dados na inicialização
         updateDataListFromDatabase();
 

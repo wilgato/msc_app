@@ -1,36 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/styles.css">
-    <title>Monitoramento de Saúde Corporal</title>
-</head>
-<body>
-    <!-- Inclua o cabeçalho -->
-    <div id="header-placeholder"></div>
-    <script>
-        fetch('header.html') // Caminho para o cabeçalho na pasta "template"
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-            });
-    </script>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+        <link rel="stylesheet" href="css/styles.css">
+        <title>Monitoramento de Saúde Corporal</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="js/chart.js"></script>
+        <script src="js/script.js"></script>
+    </head>
+    <body>
+        <!-- Inclua o cabeçalho -->
+        <div id="header-placeholder"></div>
+        <script>
+            fetch('header.html') // Caminho para o cabeçalho na pasta "template"
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                });
+        </script>
+    
+        <!-- Conteúdo da Página -->
+        <div id="content-placeholder"></div>
+        <script>
+            fetch('content_list.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('content-placeholder').innerHTML = data;
+                    
+                    // Chame a função para criar os gráficos após inserir o conteúdo
+                    createBarChart(); // Certifique-se de que a função createCharts() esteja definida em script.js
+                    createPieChart();
+                    updateDashboard();
+                });
+        </script>
 
-    <!-- Conteúdo da Página -->
-    </script>
-
-
+    
         <!-- Inclua o rodapé -->
         <div id="footer-placeholder"></div>
         <script>
-            fetch('content_list.html') // Caminho para o rodapé na pasta "template"
+            fetch('footer.html') // Caminho para o rodapé na pasta "template"
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('footer-placeholder').innerHTML = data;
-            });
-    </script>
+                });
+        </script>
+    
 
     <!-- Elemento de mensagem centralizada (inicialmente oculto) -->
     <div id="alertMessage" class="alert-message hidden">
@@ -42,17 +63,6 @@
         </div>
     </div>
 
-       <!-- Inclua o rodapé -->
-       <div id="footer-placeholder"></div>
-       <script>
-           fetch('footer.html') // Caminho para o rodapé na pasta "template"
-               .then(response => response.text())
-               .then(data => {
-                   document.getElementById('footer-placeholder').innerHTML = data;
-               });
-       </script>
-           
-    <!-- JavaScript para carregar e exibir dados -->
     <script src="js/script.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

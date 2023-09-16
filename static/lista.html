@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Lista de Dados</title>
+</head>
+<body>
+    <!-- Inclua o cabeçalho -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('header.html') // Caminho para o cabeçalho na pasta "template"
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+    </script>
+
+    <!-- Conteúdo da Página -->
+    <!-- Conteúdo da Página -->
+    <div id="content-placeholder"></div>
+    <script>
+        fetch('content_list.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('content-placeholder').innerHTML = data;
+   
+            });
+    </script>
+
+    <!-- Inclua o rodapé -->
+    <div id="footer-placeholder"></div>
+    <script>
+        fetch('footer.html') // Caminho para o rodapé na pasta "template"
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+    </script>
+
+    <script>
+        
+        // Atualize a lista de dados do banco de dados na inicialização
+        updateDataListFromDatabase();
+
+        // Atualize a lista de dados a cada 5 segundos (ou o intervalo desejado)
+        setInterval(updateDataListFromDatabase, 5000);
+    </script>
+</body>
+</html>

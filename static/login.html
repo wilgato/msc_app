@@ -1,23 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="login.css">
-    <title>Login</title>
-</head>
-<body>
-    <div class="login-container">
-        <h1>Login</h1>
-        <form>
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-            <br>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-            <br>
-            <button type="submit">Login</button>
-        </form>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+        <link rel="stylesheet" href="css/styles.css">
+        <title>Monitoramento de Saúde Corporal</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="js/chart.js"></script>
+        <script src="js/script.js"></script>
+    </head>
+    <body>
+        <!-- Inclua o cabeçalho -->
+        <div id="header-placeholder" class="fixed-top">
+        <script>
+            fetch('header.html') // Caminho para o cabeçalho na pasta "template"
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                });
+        </script>
+        </div>
+    
+       <!-- Conteúdo da Página -->
+       <div id="content-placeholder" class="relative">
+       <script>
+           fetch('content_login.html')
+           .then(response => response.text())
+           .then(data => {
+               document.getElementById('content-placeholder').innerHTML = data;
+           });
+       </script>
+       </div>
+    
+        <!-- Inclua o rodapé -->
+        <div id="footer-placeholder" class="fixed-bottom">
+        <script>
+            fetch('footer.html') // Caminho para o rodapé na pasta "template"
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('footer-placeholder').innerHTML = data;
+                });
+        </script>
+        </div>
+    
+
+    <!-- Elemento de mensagem centralizada (inicialmente oculto) -->
+    <div id="alertMessage" class="alert-message hidden">
+        <div class="popup">
+            <p id="alertText"></p>
+            <button type="button" id="closeButton" class="close-button" onclick="closeMessagePanel()">Fechar</button>
+            <button type="button" id="loginButton" onclick="redirectToLogin()">Login</button>
+            <button type="button" class="list-button" onclick="redirectToLista()">Lista de Batimentos</button>
+        </div>
     </div>
+
+    <style>
+        .alert-message {
+            text-align: left;
+        }
+    </style>
+
+    <script src="js/script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 </body>
 </html>

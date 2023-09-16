@@ -16,35 +16,15 @@ document.addEventListener("DOMContentLoaded", function () {
     // Inicialize a dashboard
     updateDashboard();
 
-   // Adicione um evento de clique ao link "Paciente 1"
-   const paciente1Link = document.querySelector('a[data-value="patient1"]');
-   if (paciente1Link) {
-       paciente1Link.addEventListener('click', function (event) {
-           event.preventDefault(); // Evita o comportamento padrão do link
-           // Redireciona para inicio.html com o parâmetro 'patient' definido como 'patient1'
-           window.location.href = 'inicio.html?patient=patient1';
-       });
-   }
+    // Event listener para o elemento <select> com id 'patientSelect'
+    document.getElementById('patientSelect').addEventListener('change', function () {
+        // Carregue os dados do paciente selecionado
+        loadPatientData();
+    });
 
-   // Adicione um evento de clique ao link "Paciente 2" (se necessário)
-   const paciente2Link = document.querySelector('a[data-value="patient2"]');
-   if (paciente2Link) {
-       paciente2Link.addEventListener('click', function (event) {
-           event.preventDefault();
-           // Redireciona para inicio.html com o parâmetro 'patient' definido como 'patient2'
-           window.location.href = 'inicio.html?patient=patient2';
-       });
-   }
+    // Carregue os dados do paciente inicialmente
+    loadPatientData();
 });
-
-const sensorDataList = [
-    { temperatura: 25.5, spo2: 95, hPa: 1013 },
-    { temperatura: 26.0, spo2: 96, hPa: 1014 },
-    { temperatura: 25.8, spo2: 94, hPa: 1012 },
-];
-
-// Chamada da função para exibir a lista de dados do sensor
-showSensorDataList(sensorDataList);
 
 // Função para criar o gráfico de barras
 function createBarChart(data) {
@@ -96,14 +76,12 @@ function createPieChart(data) {
 
 // Simulando dados
 function generateRandomData() {
-    const heartRate = Math.floor(Math.random() * (100 - 60) + 60); // BPM  Math.floor retorna o menor numero inteiro x
+    const temperatura = Math.floor(Math.random() * (30 - 20) + 20); // Temperatura em graus Celsius
     const spo2 = Math.floor(Math.random() * (100 - 90) + 90); // SpO2
-    const hPa = Math.floor(Math.random() * (100 - 95) + 95); // hPa
+    const hPa = Math.floor(Math.random() * (1015 - 1005) + 1005); // Pressão em hPa
 
-    return { heartRate, spo2, hPa };
+    return { temperatura, spo2, hPa };
 }
-
-
 
 function showAlertMessage(message) {
     const alertMessage = document.getElementById('alertMessage');
@@ -128,7 +106,6 @@ function closeMessagePanel() {
     alertText.textContent = '';
 }
 
-
 function showSensorDataList(dataList) {
     let message = "Lista de Dados do Sensor:\n\n";
     dataList.forEach((data, index) => {
@@ -144,6 +121,20 @@ function redirectToHome() {
     // Redireciona para a página inicial (substitua 'index.html' pelo caminho correto)
     window.location.href = 'index.html';
 }
+
+function redirectToLista() {
+    // Redireciona para a página de lista (substitua 'lista.html' pelo caminho correto)
+    window.location.href = 'lista.html';
+}
+
+// Redirecionar para a página de lista ao clicar em "lista"
+document.getElementById('list-button').addEventListener('click', function () {
+    const message = "Você está prestes a fazer lista. Deseja continuar?";
+    if (confirm(message)) {
+        // Redireciona para a página de lista (substitua 'lista.html' pelo caminho correto)
+        window.location.href = 'lista.html';
+    }
+});
 
 function redirectToLogin() {
     // Redireciona para a página de login (substitua 'login.html' pelo caminho correto)
@@ -162,74 +153,72 @@ document.getElementById('loginButton').addEventListener('click', function () {
 // Função para adicionar mensagem ao registro
 function addToMessageLog(message) {
     const messageLog = document.getElementById('messageLog');
-    const listItem = document.createElement('li');
-    listItem.textContent = message;
-    messageLog.appendChild(listItem);
+    const listItem = document.createElement('li'); // Crie um elemento <li> para a lista de mensagens
+    listItem.textContent = message; // Defina o texto do elemento <li> como a mensagem recebida
+    messageLog.appendChild(listItem); // Adicione o elemento <li> à lista de mensagens
 }
 
-// Função para atualizar a dashboard
 function updateDashboard() {
-    const { heartRate, spo2, hPa } = generateRandomData();
+    const { temperatura, spo2, hPa } = generateRandomData();
 
     // Atualiza a exibição da pressão cardíaca
-    document.getElementById('heartRate').textContent = `${heartRate} BPM`;
+    document.getElementById('heartRate').textContent = `${temperatura}°C`;
     document.getElementById('spo2').textContent = `${spo2}%`;
-    document.getElementById('hPa').textContent = `${hPa}%`;
+    document.getElementById('hPa').textContent = `${hPa} hPa`;
 
     // Atualize o gráfico de barras
-    barChart.data.datasets[0].data = [heartRate, spo2, hPa];
+    barChart.data.datasets[0].data = [temperatura, spo2, hPa];
     barChart.update();
 
     // Atualize o gráfico de pizza
-    pieChart.data.datasets[0].data = [heartRate, spo2, hPa];
+    pieChart.data.datasets[0].data = [temperatura, spo2, hPa];
     pieChart.update();
 
-
-    // Verifica a temperatura cardíaca e exibe mensagens de alerta
-    if (heartRate >= 50 && heartRate < 60) {
-        const message = "Atenção! Sua temperatura cardíaca está entre 50-60 BPM. Cuide-se antes que passe de 60 BPM.";
+    // Verifique a temperatura e exiba mensagens de alerta
+    if (temperatura >= 25 && temperatura < 28) {
+        const message = "A temperatura está dentro da faixa normal.";
         if (!isMessagePanelOpen) {
             showAlertMessage(message);
         }
         addToMessageLog(message);
-    } else if (heartRate >= 60) {
-        const message = "Procurar o posto de saúde urgentemente e consultar um médico. Sua pressão cardíaca passou de 60 BPM.";
-        if (!isMessagePanelOpen) {
-            showAlertMessage(message);
-        }
-        addToMessageLog(message);
-    }
-
-    // Verifica a saturação de umidade (SpO2) e exibe mensagens de alerta
-    if (spo2 >= 75 && spo2 < 80) {
-        const message = "Atenção! Seu nível de saturação de umidade está entre 75-80%. A saturação está subindo. Cuide-se.";
-        if (!isMessagePanelOpen) {
-            showAlertMessage(message);
-        }
-        addToMessageLog(message);
-    } else if (spo2 >= 80) {
-        const message = "Procurar o posto de saúde urgentemente e consultar um médico. Sua saturação de oxigênio está acima de 80%.";
+    } else if (temperatura >= 28) {
+        const message = "A temperatura está alta. Considere se refrescar.";
         if (!isMessagePanelOpen) {
             showAlertMessage(message);
         }
         addToMessageLog(message);
     }
 
-    // Verifica a saturação de pressão (hPa) e exibe mensagens de alerta
-    if (hPa >= 95 && hPa < 100) {
-        const message = "Atenção! Seu nível de saturação de pressão está entre 75-80%. A saturação está subindo. Cuide-se.";
+    // Verifique a umidade (SpO2) e exiba mensagens de alerta
+    if (spo2 >= 90 && spo2 <= 100) {
+        const message = "Os níveis de umidade estão dentro da faixa normal.";
         if (!isMessagePanelOpen) {
             showAlertMessage(message);
         }
         addToMessageLog(message);
-    } else if (hPa >= 100) {
-        const message = "Procurar o posto de saúde urgentemente e consultar um médico. Sua saturação de oxigênio está acima de 80%.";
+    } else if (spo2 < 90) {
+        const message = "A umidade está baixa. Tente manter-se hidratado.";
         if (!isMessagePanelOpen) {
             showAlertMessage(message);
         }
         addToMessageLog(message);
     }
-    
+
+    // Verifique a pressão (hPa) e exiba mensagens de alerta
+    if (hPa >= 1005 && hPa <= 1015) {
+        const message = "A pressão está dentro da faixa normal.";
+        if (!isMessagePanelOpen) {
+            showAlertMessage(message);
+        }
+        addToMessageLog(message);
+    } else if (hPa < 1005) {
+        const message = "A pressão está baixa. Consulte um médico, se necessário.";
+        if (!isMessagePanelOpen) {
+            showAlertMessage(message);
+        }
+        addToMessageLog(message);
+    }
+
     // Adicione um timestamp às etiquetas (opcional)
     const timestamp = new Date().toLocaleTimeString();
 
@@ -244,33 +233,31 @@ function updateDashboard() {
     pieChart.data.labels.push(timestamp);
 
     // Atualize os gráficos de linha
-    barChart.data.datasets[0].data.push(heartRate);
+    barChart.data.datasets[0].data.push(temperatura);
     barChart.data.datasets[1].data.push(spo2);
     barChart.data.datasets[2].data.push(hPa);
 
-    pieChart.data.datasets[0].data.push(heartRate);
+    pieChart.data.datasets[0].data.push(temperatura);
     pieChart.data.datasets[1].data.push(spo2);
     pieChart.data.datasets[2].data.push(hPa);
 
     barChart.update(); // Atualiza o gráfico de barras
     pieChart.update(); // Atualiza o gráfico de pizza
-    }
- 
+}
 
-    // Limite o número de pontos no gráfico (opcional)
-    const maxDataPoints = 10; // Por exemplo, limite a 10 pontos
-    if (chart.data.labels.length > maxDataPoints) {
-        chart.data.labels.shift();
-        chart.data.datasets[0].data.shift();
-    }
+// Continuação do código...
+// Limite o número de pontos no gráfico (opcional)
+const maxDataPoints = 10; // Por exemplo, limite a 10 pontos
+if (barChart.data.labels.length > maxDataPoints) {
+    barChart.data.labels.shift();
+    barChart.data.datasets[0].data.shift();
+}
 
-    // Atualiza a variável isMessagePanelOpen com base na abertura/fechamento do painel
-    const messagePanel = document.getElementById('alertMessage');
-    isMessagePanelOpen = !messagePanel.classList.contains('hidden');
- 
-    chart.update(); // Atualiza o gráfico
+// Atualiza a variável isMessagePanelOpen com base na abertura/fechamento do painel
+const messagePanel = document.getElementById('alertMessage');
+isMessagePanelOpen = !messagePanel.classList.contains('hidden');
 
-   
+barChart.update(); // Atualiza o gráfico
 
 // Event listener para o elemento <select> com id 'patientSelect'
 document.getElementById('patientSelect').addEventListener('change', function () {
@@ -288,45 +275,76 @@ function loadPatientData() {
     // Adicione os dados do paciente selecionado
     if (selectedPatient === 'patient1') {
         patientData = [
-            { temperatura: 25.5, spo2: 95, hPa: 1013 },
-            { temperatura: 26.0, spo2: 96, hPa: 1014 },
-            { temperatura: 25.8, spo2: 94, hPa: 1012 },
+            { temperatura: 24.5, spo2: 95, hPa: 1010 },
+            { temperatura: 25.0, spo2: 96, hPa: 1011 },
+            { temperatura: 25.5, spo2: 97, hPa: 1010 },
         ];
     } else if (selectedPatient === 'patient2') {
         patientData = [
-            { temperatura: 27.0, spo2: 97, hPa: 1012 },
-            { temperatura: 26.5, spo2: 98, hPa: 1013 },
-            { temperatura: 25.9, spo2: 96, hPa: 1011 },
+            { temperatura: 26.0, spo2: 94, hPa: 1009 },
+            { temperatura: 26.5, spo2: 93, hPa: 1008 },
+            { temperatura: 27.0, spo2: 92, hPa: 1007 },
         ];
     }
 
-    // Chame a função para atualizar os gráficos
-    updateCharts(patientData);
+    // Atualize os dados do paciente na interface do usuário
+    updatePatientDataUI(patientData);
 }
 
-// Função para atualizar os gráficos com os dados do paciente selecionado
-function updateCharts(patientData) {
-    if (patientData.length > 0) {
-        const temperatures = patientData.map(data => data.temperatura);
-        const spo2Values = patientData.map(data => data.spo2);
-        const hPaValues = patientData.map(data => data.hPa);
+// Função para atualizar os dados do paciente na interface do usuário
+function updatePatientDataUI(data) {
+    const patientDataTable = document.getElementById('patientDataTable');
+    // Limpe a tabela
+    patientDataTable.innerHTML = '';
 
-        // Atualize o gráfico de barras
-        barChart.data.datasets[0].data = temperatures;
-        barChart.data.datasets[1].data = spo2Values;
-        barChart.data.datasets[2].data = hPaValues;
-        barChart.update();
+    if (data.length === 0) {
+        // Caso não haja dados, exiba uma mensagem
+        const noDataMessage = document.createElement('p');
+        noDataMessage.textContent = 'Nenhum dado disponível para este paciente.';
+        patientDataTable.appendChild(noDataMessage);
+    } else {
+        // Caso haja dados, crie uma tabela e adicione os dados do paciente
+        const table = document.createElement('table');
+        const thead = document.createElement('thead');
+        const tbody = document.createElement('tbody');
 
-        // Atualize o gráfico de pizza
-        pieChart.data.datasets[0].data = temperatures;
-        pieChart.data.datasets[1].data = spo2Values;
-        pieChart.data.datasets[2].data = hPaValues;
-        pieChart.update();
+        // Crie a linha de cabeçalho
+        const headerRow = document.createElement('tr');
+        const headerTemperatura = document.createElement('th');
+        headerTemperatura.textContent = 'Temperatura (°C)';
+        const headerSpO2 = document.createElement('th');
+        headerSpO2.textContent = 'SpO2 (%)';
+        const headerHPa = document.createElement('th');
+        headerHPa.textContent = 'Pressão (hPa)';
+
+        headerRow.appendChild(headerTemperatura);
+        headerRow.appendChild(headerSpO2);
+        headerRow.appendChild(headerHPa);
+
+        thead.appendChild(headerRow);
+
+        // Adicione os dados do paciente à tabela
+        data.forEach((item) => {
+            const dataRow = document.createElement('tr');
+            const temperaturaCell = document.createElement('td');
+            temperaturaCell.textContent = item.temperatura;
+            const spo2Cell = document.createElement('td');
+            spo2Cell.textContent = item.spo2;
+            const hPaCell = document.createElement('td');
+            hPaCell.textContent = item.hPa;
+
+            dataRow.appendChild(temperaturaCell);
+            dataRow.appendChild(spo2Cell);
+            dataRow.appendChild(hPaCell);
+
+            tbody.appendChild(dataRow);
+        });
+
+        table.appendChild(thead);
+        table.appendChild(tbody);
+        patientDataTable.appendChild(table);
     }
 }
 
-// Atualiza a dashboard a cada 5 segundos (simulação)
-setInterval(updateDashboard, 5000);
-
-// Inicializa a dashboard
+// Atualize a dashboard inicialmente
 updateDashboard();

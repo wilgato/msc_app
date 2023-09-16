@@ -9,11 +9,11 @@
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     
-        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="css/styles.css">
         <title>Monitoramento de Saúde Corporal</title>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="chart.js"></script>
-        <script src="script.js"></script>
+        <script src="js/chart.js"></script>
+        <script src="js/script.js"></script>
     </head>
     <body>
         <!-- Inclua o cabeçalho -->
@@ -27,19 +27,19 @@
         </script>
     
         <!-- Conteúdo da Página -->
-    <div id="content-placeholder"></div>
-    <script>
-        fetch('content.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('content-placeholder').innerHTML = data;
-                
-                // Chame a função para criar os gráficos após inserir o conteúdo
-                createBarChart(); // Certifique-se de que a função createCharts() esteja definida em script.js
-                createPieChart();
-                updateDashboard();
-            });
-    </script>
+        <div id="content-placeholder"></div>
+        <script>
+            fetch('content.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('content-placeholder').innerHTML = data;
+                    
+                    // Chame a função para criar os gráficos após inserir o conteúdo
+                    createBarChart(); // Certifique-se de que a função createCharts() esteja definida em script.js
+                    createPieChart();
+                    updateDashboard();
+                });
+        </script>
 
     
         <!-- Inclua o rodapé -->
@@ -59,11 +59,11 @@
             <p id="alertText"></p>
             <button type="button" id="closeButton" class="close-button" onclick="closeMessagePanel()">Fechar</button>
             <button type="button" id="loginButton" onclick="redirectToLogin()">Login</button>
-            <button type="button" class="list-button" onclick="showHeartRateList()">Lista de Batimentos</button>
+            <button type="button" class="list-button" onclick="redirectToLista()">Lista de Batimentos</button>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="js/script.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 </body>

@@ -1,36 +1,48 @@
-use rusqlite::{params, Connection, Result};
-use warp::reject::custom;
-use warp::Rejection;
+use mysql::prelude::*;
+use mysql::{Error, OptsBuilder};
+use serde::{Serialize, Deserialize};
 
-// Defina a estrutura do seu banco de dados
+#[derive(Debug, Serialize, Deserialize)]
+pub struct YourDataStruct {
+    id: i32,
+    temperatura: Option<f64>,
+    umidade: Option<f64>,
+    pressao: Option<f64>,
+    paciente_id: String,
+    postingTime: String,
+}
+
 pub struct Database {
-    conn: Connection,
+    pool: mysql::Pool,
 }
 
 impl Database {
-    // Função para conectar ao banco de dados
-    pub fn new(database_url: &str) -> Result<Self> {
-        let conn = Connection::open(database_url)?;
-        // Inicialize as tabelas ou realize outras operações de inicialização, se necessário
-        // Exemplo: conn.execute("CREATE TABLE IF NOT EXISTS ...", params![])?;
-        Ok(Database { conn })
+    pub fn new() -> Result<Self, Error> {
+        let mysql_opts = OptsBuilder::new()
+            .ip_or_hostname("localhost:3306") // Coloque o endereço do seu servidor MySQL aqui
+            .user("root") // Coloque seu nome de usuário MySQL aqui
+            .pass("shalon007") // Coloque sua senha MySQL aqui
+            .db_name("sys"); // Substitua pelo nome do seu banco de dados
+
+        let pool = mysql::Pool::new(mysql_opts)?;
+
+        Ok(Database { pool })
     }
 
-    // Função para consultar dados do banco de dados
-    pub fn query_data(&self) -> Result<Vec<YourDataStruct>> {
-        // Execute consultas SQL e retorne os resultados como uma estrutura de dados
-        // Exemplo: self.conn.prepare("SELECT * FROM your_table")...
-    }
+    pub fn query_data(&self) -> Result<Vec<YourDataStruct>, Error> {
+        let mut conn = self.pool.get_conn()?;
+        let query = "SELECT * FROM dados_sensor1";
+        let data = conn.query_map(query, |(id, temperatura, umidade, pressao, paciente_id, postingTime)| {
+            YourDataStruct {
+                id,
+                temperatura,
+                umidade,
+                pressao,
+                paciente_id,
+                postingTime,
+            }
+        })?;
 
-    // Função para atualizar dados no banco de dados
-    pub fn update_data(&self, data: &YourDataStruct) -> Result<()> {
-        // Execute instruções SQL para atualizar os dados
-        // Exemplo: self.conn.execute("UPDATE your_table SET ... WHERE ...", params![])?;
-        Ok(())
+        Ok(data)
     }
-}
-
-// Função para lidar com erros de banco de dados
-pub fn handle_database_error(err: rusqlite::Error) -> Rejection {
-    custom(err)
 }

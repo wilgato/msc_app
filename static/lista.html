@@ -19,38 +19,16 @@
     </script>
 
     <!-- Conteúdo da Página -->
-    <div class="container mt-5">
-        <h1>Lista de Dados</h1>
-        <select id="selectPaciente" onchange="selecionarPaciente()">
-            <option value="">Selecione um paciente</option>
-            <option value="patient1">Paciente 1</option>
-            <option value="patient2">Paciente 2</option>
-            <!-- Adicione mais opções de pacientes, se necessário -->
-        </select>
-        <p id="nomePaciente"></p> <!-- Elemento para exibir o nome do paciente selecionado -->
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Temperatura (°C)</th>
-                    <th scope="col">Umidade (%)</th>
-                    <th scope="col">Pressão (hPa)</th>
-                    <th scope="col">Data e Hora</th>
-                </tr>
-            </thead>
-            <tbody id="dataList">
-                <!-- Os dados serão inseridos aqui dinamicamente -->
-            </tbody>
-        </table>
-    </div>
+    </script>
 
-    <!-- Inclua o rodapé -->
-    <div id="footer-placeholder"></div>
-    <script>
-        fetch('footer.html') // Caminho para o rodapé na pasta "template"
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('footer-placeholder').innerHTML = data;
+
+        <!-- Inclua o rodapé -->
+        <div id="footer-placeholder"></div>
+        <script>
+            fetch('content_list.html') // Caminho para o rodapé na pasta "template"
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('footer-placeholder').innerHTML = data;
             });
     </script>
 
@@ -64,6 +42,16 @@
         </div>
     </div>
 
+       <!-- Inclua o rodapé -->
+       <div id="footer-placeholder"></div>
+       <script>
+           fetch('footer.html') // Caminho para o rodapé na pasta "template"
+               .then(response => response.text())
+               .then(data => {
+                   document.getElementById('footer-placeholder').innerHTML = data;
+               });
+       </script>
+           
     <!-- JavaScript para carregar e exibir dados -->
     <script src="js/script.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

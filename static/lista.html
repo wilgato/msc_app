@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/styles.css">
-    <title>Lista de Dados</title>
+    <title>Monitoramento de Saúde Corporal</title>
 </head>
 <body>
     <!-- Inclua o cabeçalho -->
@@ -21,6 +21,13 @@
     <!-- Conteúdo da Página -->
     <div class="container mt-5">
         <h1>Lista de Dados</h1>
+        <select id="selectPaciente" onchange="selecionarPaciente()">
+            <option value="">Selecione um paciente</option>
+            <option value="patient1">Paciente 1</option>
+            <option value="patient2">Paciente 2</option>
+            <!-- Adicione mais opções de pacientes, se necessário -->
+        </select>
+        <p id="nomePaciente"></p> <!-- Elemento para exibir o nome do paciente selecionado -->
         <table class="table">
             <thead>
                 <tr>
@@ -61,7 +68,5 @@
     <script src="js/script.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-
-
 </body>
 </html>

@@ -127,13 +127,22 @@ function redirectToLista() {
     window.location.href = 'lista.html';
 }
 
-// Redirecionar para a página de lista ao clicar em "lista"
-document.getElementById('list-button').addEventListener('click', function () {
-    const message = "Você está prestes a fazer lista. Deseja continuar?";
-    if (confirm(message)) {
-        // Redireciona para a página de lista (substitua 'lista.html' pelo caminho correto)
-        window.location.href = 'lista.html';
-    }
+
+function redirectToLista() {
+    // Redireciona para a página de login (substitua 'login.html' pelo caminho correto)
+    window.location.href = 'lista.html';
+}
+
+// Defina uma variável global para armazenar o valor selecionado no <select>
+let selectedPatient = '';
+
+// Event listener para o elemento <select> com id 'patientSelect'
+document.getElementById('patientSelect').addEventListener('change', function () {
+    // Atualize a variável selectedPatient com o valor selecionado
+    selectedPatient = this.value;
+
+    // Carregue os dados do paciente selecionado
+    loadPatientData(selectedPatient);
 });
 
 function redirectToLogin() {
@@ -259,232 +268,168 @@ isMessagePanelOpen = !messagePanel.classList.contains('hidden');
 
 barChart.update(); // Atualiza o gráfico
 
-// Event listener para o botão com id 'list-button'
-document.getElementById('list-button').addEventListener('click', function () {
-    const message = "Você está prestes a fazer lista. Deseja continuar?";
-    if (confirm(message)) {
-        // Redireciona para a página de lista (substitua 'lista.html' pelo caminho correto)
-        window.location.href = 'lista.html';
-    }
+// Event listener para o elemento <select> com id 'patientSelect'
+document.getElementById('patientSelect').addEventListener('change', function () {
+    // Atualize a variável selectedPatient com o valor selecionado
+    selectedPatient = this.value;
+
+    // Carregue os dados do paciente selecionado
+    loadPatientData(selectedPatient);
 });
 
-// Função para carregar os dados do paciente selecionado
-function loadPatientData() {
-    const selectedPatient = $('#patientSelect').val();
+// Função para carregar a lista de pacientes a partir do banco de dados
+function loadPatientList() {
+    fetch('/api/pacientes') // Substitua pelo caminho correto da rota que fornece a lista de pacientes
+        .then(response => response.json())
+        .then(data => {
+            const patientSelect = document.getElementById('patientSelect');
 
+            // Limpar as opções existentes
+            patientSelect.innerHTML = '';
+
+            // Preencher as opções do <select> com os pacientes do banco de dados
+            data.forEach(patient => {
+                const option = document.createElement('option');
+                option.value = patient.id; // Suponha que cada paciente tenha um ID único no banco de dados
+                option.textContent = patient.nome; // Substitua 'nome' pelo campo apropriado no seu banco de dados
+                patientSelect.appendChild(option);
+            });
+
+            // Chame a função para carregar os dados do paciente selecionado
+            loadPatientData(selectedPatient);
+        })
+        .catch(error => {
+            console.error('Erro ao buscar a lista de pacientes:', error);
+        });
+}
+
+// Chame a função para carregar a lista de pacientes na inicialização
+loadPatientList();
+
+
+// Função para carregar os dados do paciente selecionado
+function loadPatientData(patientId) {
     // Simule a obtenção de dados do paciente a partir de alguma fonte (por exemplo, um banco de dados)
     let patientData = [];
 
-    // Adicione os dados do paciente selecionado
-    if (selectedPatient === 'patient1') {
+    if (patientId === 'patient1') {
         patientData = [
-            { temperatura: 24.5, spo2: 95, hPa: 1010 },
-            { temperatura: 25.0, spo2: 96, hPa: 1011 },
-            { temperatura: 25.5, spo2: 97, hPa: 1010 },
+            { temperatura: 25.5, spo2: 95, hPa: 1013 },
+            { temperatura: 26.0, spo2: 96, hPa: 1014 },
+            { temperatura: 25.8, spo2: 94, hPa: 1012 },
         ];
-    } else if (selectedPatient === 'patient2') {
+    } else if (patientId === 'patient2') {
         patientData = [
-            { temperatura: 26.0, spo2: 94, hPa: 1009 },
-            { temperatura: 26.5, spo2: 93, hPa: 1008 },
-            { temperatura: 27.0, spo2: 92, hPa: 1007 },
+            { temperatura: 27.0, spo2: 97, hPa: 1012 },
+            { temperatura: 26.5, spo2: 98, hPa: 1013 },
+            { temperatura: 25.9, spo2: 96, hPa: 1011 },
         ];
     }
 
-    // Atualize os dados do paciente na interface do usuário
-    updatePatientDataUI(patientData);
+    // Chame a função para atualizar os gráficos
+    updateCharts(patientData);
 }
 
-// Função para carregar a lista de pacientes do banco de dados
-function carregarListaDePacientes() {
-    // Fazer uma solicitação AJAX para buscar a lista de pacientes do servidor
-    fetch('/api/pacientes') // Substitua pela rota correta que busca pacientes no seu servidor
+// Função para atualizar os gráficos com os dados do paciente selecionado
+function updateCharts(patientData) {
+    if (patientData.length > 0) {
+        const temperatures = patientData.map(data => data.temperatura);
+        const spo2Values = patientData.map(data => data.spo2);
+        const hPaValues = patientData.map(data => data.hPa);
+
+        // Atualize o gráfico de barras
+        barChart.data.datasets[0].data = temperatures;
+        barChart.data.datasets[1].data = spo2Values;
+        barChart.data.datasets[2].data = hPaValues;
+        barChart.update();
+
+        // Atualize o gráfico de pizza
+        pieChart.data.datasets[0].data = temperatures;
+        pieChart.data.datasets[1].data = spo2Values;
+        pieChart.data.datasets[2].data = hPaValues;
+        pieChart.update();
+    }
+}
+
+// Chame a função loadPatientData() para carregar os dados do paciente inicialmente
+loadPatientData(selectedPatient);
+
+// Função para buscar e preencher os dados da tabela com os dados do banco de dados
+function updateDataListFromDatabase() {
+    fetch('/api/dados_sensor1') // Substitua pelo caminho correto da rota que fornece os dados do banco de dados
         .then(response => response.json())
         .then(data => {
-            // Preencher o seletor de pacientes com os dados obtidos
-            const selectElement = document.getElementById('patientSelect');
+            const dataList = document.getElementById('dataList');
 
-            data.forEach(paciente => {
-                const option = document.createElement('option');
-                option.value = paciente.id;
-                option.textContent = paciente.nome;
-                selectElement.appendChild(option);
+            // Limpar a tabela existente
+            dataList.innerHTML = '';
+
+            // Preencher a tabela com os dados do banco de dados
+            data.forEach((row, index) => {
+                const rowElement = document.createElement('tr');
+                rowElement.innerHTML = `
+                    <th scope="row">${index + 1}</th>
+                    <td>${row.temperatura} °C</td>
+                    <td>${row.umidade} %</td>
+                    <td>${row.pressao} hPa</td>
+                    <td>${row.postingTime}</td>
+                `;
+                dataList.appendChild(rowElement);
             });
         })
         .catch(error => {
-            console.error('Erro ao buscar lista de pacientes:', error);
+            console.error('Erro ao buscar dados do banco de dados:', error);
         });
 }
 
-// Função para preencher o seletor de pacientes com a lista carregada
-function preencherSeletorDePacientes() {
-    const pacientes = carregarListaDePacientes();
-    const selectElement = document.getElementById('patientSelect');
+function selecionarPaciente() {
+    // Limpa a tabela de dados
+    document.getElementById('dataList').innerHTML = '';
 
-    pacientes.forEach(paciente => {
-        const option = document.createElement('option');
-        option.value = paciente.id;
-        option.textContent = paciente.nome;
-        selectElement.appendChild(option);
-    });
-}
-// Função para atualizar os dados do paciente na interface do usuário
-function updatePatientDataUI(data) {
-    const patientDataTable = document.getElementById('patientDataTable');
-    // Limpe a tabela
-    patientDataTable.innerHTML = '';
+    // Obtém o elemento de seleção de paciente
+    var selectPaciente = document.getElementById('selectPaciente');
 
-    if (data.length === 0) {
-        // Caso não haja dados, exiba uma mensagem
-        const noDataMessage = document.createElement('p');
-        noDataMessage.textContent = 'Nenhum dado disponível para este paciente.';
-        patientDataTable.appendChild(noDataMessage);
-    } else {
-        // Caso haja dados, crie uma tabela e adicione os dados do paciente
-        const table = document.createElement('table');
-        const thead = document.createElement('thead');
-        const tbody = document.createElement('tbody');
+    // Obtém o nome do paciente selecionado
+    var nomePaciente = selectPaciente.options[selectPaciente.selectedIndex].text;
 
-        // Crie a linha de cabeçalho
-        const headerRow = document.createElement('tr');
-        const headerTemperatura = document.createElement('th');
-        headerTemperatura.textContent = 'Temperatura (°C)';
-        const headerSpO2 = document.createElement('th');
-        headerSpO2.textContent = 'SpO2 (%)';
-        const headerHPa = document.createElement('th');
-        headerHPa.textContent = 'Pressão (hPa)';
+    // Exibe o nome do paciente selecionado acima da tabela
+    document.getElementById('nomePaciente').textContent = nomePaciente;
 
-        headerRow.appendChild(headerTemperatura);
-        headerRow.appendChild(headerSpO2);
-        headerRow.appendChild(headerHPa);
+    // Obtém os dados do banco de dados para o paciente selecionado
+    // e preenche a tabela de dados com os dados correspondentes
+    // Você precisará implementar essa parte de acordo com a sua lógica e estrutura de dados do banco de dados.
+    // Por exemplo, você pode usar AJAX ou fetch API para fazer uma solicitação ao servidor e receber os dados.
+    // Após obter os dados, insira-os na tabela de dados usando document.getElementById('dataList').innerHTML = ...;
 
-        thead.appendChild(headerRow);
+    // Exemplo de como preencher a tabela de dados com dados estáticos (apague isso e substitua pela sua lógica)
+    var dadosPaciente = [
+        { temperatura: 36.5, umidade: 60, pressao: 120, dataHora: '2022-10-10 10:00:00' },
+        { temperatura: 36.2, umidade: 55, pressao: 118, dataHora: '2022-10-10 11:00:00' },
+        { temperatura: 36.8, umidade: 62, pressao: 122, dataHora: '2022-10-10 12:00:00' }
+    ];
 
-        // Adicione os dados do paciente à tabela
-        data.forEach((item) => {
-            const dataRow = document.createElement('tr');
-            const temperaturaCell = document.createElement('td');
-            temperaturaCell.textContent = item.temperatura;
-            const spo2Cell = document.createElement('td');
-            spo2Cell.textContent = item.spo2;
-            const hPaCell = document.createElement('td');
-            hPaCell.textContent = item.hPa;
+    for (var i = 0; i < dadosPaciente.length; i++) {
+        var dado = dadosPaciente[i];
 
-            dataRow.appendChild(temperaturaCell);
-            dataRow.appendChild(spo2Cell);
-            dataRow.appendChild(hPaCell);
+        var row = document.createElement('tr');
+        row.innerHTML = '<th scope="row">' + (i + 1) + '</th>' +
+            '<td>' + dado.temperatura + '</td>' +
+            '<td>' + dado.umidade + '</td>' +
+            '<td>' + dado.pressao + '</td>' +
+            '<td>' + dado.dataHora + '</td>';
 
-            tbody.appendChild(dataRow);
-        });
-
-        table.appendChild(thead);
-        table.appendChild(tbody);
-        patientDataTable.appendChild(table);
+        document.getElementById('dataList').appendChild(row);
     }
 }
 
-// Atualize a dashboard inicialmente
+// Atualize a lista de dados do banco de dados na inicialização
+updateDataListFromDatabase();
+
+// Atualize a lista de dados a cada 5 segundos (ou o intervalo desejado)
+setInterval(updateDataListFromDatabase, 5000);
+
+// Atualiza a dashboard a cada 5 segundos (simulação)
+setInterval(updateDashboard, 5000);
+
+// Inicializa a dashboard
 updateDashboard();
-
-// Função para buscar dados do servidor e preencher a tabela
-function updateDataListFromDatabase() {
-    // Faça uma solicitação AJAX para o servidor
-    $.ajax({
-        url: 'http://127.0.0.1:3306/api/dados_sensor1', // Substitua com o URL do seu servidor
-        type: 'GET',
-        dataType: 'json',
-        success: function (data) {
-            // Limpe a tabela antes de adicionar novos dados
-            $('#dataList').empty();
-
-            // Itere sobre os dados recebidos do servidor
-            for (var i = 0; i < data.length; i++) {
-                var rowData = data[i];
-                // Crie uma nova linha na tabela
-                var row = $('<tr>');
-                row.append('<th scope="row">' + (i + 1) + '</th>');
-                row.append('<td>' + rowData.temperatura + '°C</td>');
-                row.append('<td>' + rowData.umidade + '%</td>');
-                row.append('<td>' + rowData.pressao + 'hPa</td>');
-                row.append('<td>' + rowData.data_hora + '</td>');
-                // Adicione a linha à tabela
-                $('#dataList').append(row);
-            }
-        },
-        error: function (error) {
-            console.error('Erro ao buscar dados do servidor: ' + error);
-        }
-    });
-}
-
-function fillDataTable(data) {
-    // Encontre o elemento da tabela onde deseja preencher os dados
-    const dataListTable = document.getElementById('dataList');
-
-    // Limpe a tabela
-    dataListTable.innerHTML = '';
-
-    // Preencha a tabela com os dados recebidos do servidor
-    data.forEach((item, index) => {
-        const row = dataListTable.insertRow(index);
-        const cell1 = row.insertCell(0);
-        const cell2 = row.insertCell(1);
-        const cell3 = row.insertCell(2);
-        const cell4 = row.insertCell(3);
-        const cell5 = row.insertCell(4);
-
-        cell1.textContent = item.id;
-        cell2.textContent = item.temperatura + ' °C';
-        cell3.textContent = item.umidade + ' %';
-        cell4.textContent = item.pressao + ' hPa';
-        cell5.textContent = item.postingTime;
-    });
-}
-
-function fillDataTable(data) {
-    // Encontre o elemento da tabela onde deseja preencher os dados
-    const dataListTable = document.getElementById('dataList');
-
-    // Limpe a tabela
-    dataListTable.innerHTML = '';
-
-    // Preencha a tabela com os dados recebidos do servidor
-    data.forEach((item, index) => {
-        const row = dataListTable.insertRow(index);
-        
-        // Coluna de ID
-        const cell1 = row.insertCell(0);
-        cell1.textContent = item.id;
-
-        // Coluna de Temperatura
-        const cell2 = row.insertCell(1);
-        cell2.textContent = item.temperatura.toFixed(2) + ' °C'; // Arredonde a temperatura para 2 casas decimais
-
-        // Coluna de Umidade
-        const cell3 = row.insertCell(2);
-        cell3.textContent = item.umidade.toFixed(2) + ' %'; // Arredonde a umidade para 2 casas decimais
-
-        // Coluna de Pressão
-        const cell4 = row.insertCell(3);
-        cell4.textContent = item.pressao.toFixed(2) + ' hPa'; // Arredonde a pressão para 2 casas decimais
-
-        // Coluna de Data e Hora
-        const cell5 = row.insertCell(4);
-        cell5.textContent = item.postingTime;
-    });
-}
-
-
-// Função principal que será executada quando a página carregar
-function main() {
-    // Chame a função para preencher o seletor de pacientes
-    preencherSeletorDePacientes();
-    // Chame a função para carregar a lista de pacientes
-    carregarListaDePacientes();
-
-    // Chame a função para buscar e preencher os dados na tabela
-    updateDataListFromDatabase();
-}
-
-// Registre o evento "DOMContentLoaded" para chamar a função principal quando a página carregar
-document.addEventListener('DOMContentLoaded', main);
-

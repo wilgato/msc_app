@@ -259,10 +259,13 @@ isMessagePanelOpen = !messagePanel.classList.contains('hidden');
 
 barChart.update(); // Atualiza o gráfico
 
-// Event listener para o elemento <select> com id 'patientSelect'
-document.getElementById('patientSelect').addEventListener('change', function () {
-    // Carregue os dados do paciente selecionado
-    loadPatientData();
+// Event listener para o botão com id 'list-button'
+document.getElementById('list-button').addEventListener('click', function () {
+    const message = "Você está prestes a fazer lista. Deseja continuar?";
+    if (confirm(message)) {
+        // Redireciona para a página de lista (substitua 'lista.html' pelo caminho correto)
+        window.location.href = 'lista.html';
+    }
 });
 
 // Função para carregar os dados do paciente selecionado
@@ -386,7 +389,7 @@ updateDashboard();
 function updateDataListFromDatabase() {
     // Faça uma solicitação AJAX para o servidor
     $.ajax({
-        url: 'http://127.0.0.1:3306//api/dados_sensor1', // Substitua com o URL do seu servidor
+        url: 'http://127.0.0.1:3306/api/dados_sensor1', // Substitua com o URL do seu servidor
         type: 'GET',
         dataType: 'json',
         success: function (data) {
@@ -477,6 +480,9 @@ function main() {
     preencherSeletorDePacientes();
     // Chame a função para carregar a lista de pacientes
     carregarListaDePacientes();
+
+    // Chame a função para buscar e preencher os dados na tabela
+    updateDataListFromDatabase();
 }
 
 // Registre o evento "DOMContentLoaded" para chamar a função principal quando a página carregar

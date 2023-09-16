@@ -22,7 +22,7 @@ impl Database {
             .ip_or_hostname("localhost:3306") // Coloque o endereço do seu servidor MySQL aqui
             .user("root") // Coloque seu nome de usuário MySQL aqui
             .pass("shalon007") // Coloque sua senha MySQL aqui
-            .db_name("sys"); // Substitua pelo nome do seu banco de dados
+            .db_name("energizz_pi5"); // Substitua pelo nome do seu banco de dados
 
         let pool = mysql::Pool::new(mysql_opts)?;
 

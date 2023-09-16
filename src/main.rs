@@ -1,9 +1,6 @@
-use warp::Filter;
+use warp::{Filter, Rejection, Reply};
 use serde::{Serialize, Deserialize};
 use warp::http::StatusCode;
-use warp::Rejection;
-use warp::Reply;
-use std::convert::Infallible;
 
 #[derive(Serialize, Deserialize)]
 struct SensorData {
@@ -15,23 +12,9 @@ struct SensorData {
 #[tokio::main]
 async fn main() {
     let static_files = warp::fs::dir("static");
-
-    // Defina a rota para buscar os dados do sensor
-    let data_route = warp::path!("api" / "dados_sensor1")
-        .map(|| {
-            // Lógica para buscar os dados do sensor no banco de dados
-            // Substitua este trecho pela lógica real para buscar os dados
-            let data = SensorData {
-                temperatura: 25.5,
-                umidade: 50.0,
-                pressao: 1013.25,
-            };
-            warp::reply::json(&data)
-        });
-
-    // Roteie todas as rotas, incluindo a rota dos dados do sensor
     let routes = warp::path("api")
-        .and(data_route)
+        .and(warp::path("dados_sensor1"))
+        .and_then(query_data_from_database)
         .or(static_files);
 
     let addr = ([127, 0, 0, 1], 8000);
@@ -41,4 +24,19 @@ async fn main() {
     warp::serve(routes)
         .run(addr)
         .await;
+}
+
+async fn query_data_from_database() -> Result<impl Reply, Rejection> {
+    // Simule a consulta ao banco de dados aqui
+    let data = SensorData {
+        temperatura: 25.5,
+        umidade: 50.0,
+        pressao: 1013.25,
+    };
+
+    // Criar uma resposta JSON com um código de status personalizado
+    let response = warp::reply::json(&data);
+    let response_with_status = warp::reply::with_status(response, StatusCode::OK);
+
+    Ok(response_with_status)
 }

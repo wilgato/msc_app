@@ -41,6 +41,36 @@
                 });
         </script>
 
+<script>
+    // Função para carregar a lista de pacientes do servidor
+    function loadPatientList() {
+        fetch('/api/pacientes') // Substitua pelo caminho correto da rota que fornece a lista de pacientes
+            .then(response => response.json())
+            .then(data => {
+                const patientSelect = document.getElementById('selectPaciente');
+
+                // Limpar as opções existentes
+                patientSelect.innerHTML = '';
+
+                // Preencher as opções do <select> com os pacientes do banco de dados
+                data.forEach(patient => {
+                    const option = document.createElement('option');
+                    option.value = patient.id; // Suponha que cada paciente tenha um ID único no banco de dados
+                    option.textContent = patient.nome; // Substitua 'nome' pelo campo apropriado no seu banco de dados
+                    patientSelect.appendChild(option);
+                });
+
+                // Chame a função para carregar os dados do paciente selecionado
+                selecionarPaciente();
+            })
+            .catch(error => {
+                console.error('Erro ao buscar a lista de pacientes:', error);
+            });
+    }
+
+    // Chame a função para carregar a lista de pacientes na inicialização
+    loadPatientList();
+</script>
     
         <!-- Inclua o rodapé -->
         <div id="footer-placeholder"></div>

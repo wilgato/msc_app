@@ -2,6 +2,8 @@
 var barChart;
 var pieChart;
 var isMessagePanelOpen = false;
+// Variável global para armazenar os dados do paciente
+let patientData = [];
 
 document.addEventListener("DOMContentLoaded", function () {
     // Crie o gráfico de barras inicialmente
@@ -277,7 +279,7 @@ document.getElementById('patientSelect').addEventListener('change', function () 
     loadPatientData(selectedPatient);
 });
 
-// Função para carregar a lista de pacientes a partir do banco de dados
+// Função para carregar a lista de pacientes do servidor
 function loadPatientList() {
     fetch('/api/pacientes') // Substitua pelo caminho correto da rota que fornece a lista de pacientes
         .then(response => response.json())
@@ -296,7 +298,7 @@ function loadPatientList() {
             });
 
             // Chame a função para carregar os dados do paciente selecionado
-            loadPatientData(selectedPatient);
+            loadPatientData();
         })
         .catch(error => {
             console.error('Erro ao buscar a lista de pacientes:', error);
@@ -306,29 +308,35 @@ function loadPatientList() {
 // Chame a função para carregar a lista de pacientes na inicialização
 loadPatientList();
 
+// Chame a função para carregar a lista de pacientes na inicialização
+loadPatientList();
 
-// Função para carregar os dados do paciente selecionado
-function loadPatientData(patientId) {
-    // Simule a obtenção de dados do paciente a partir de alguma fonte (por exemplo, um banco de dados)
-    let patientData = [];
 
-    if (patientId === 'patient1') {
-        patientData = [
-            { temperatura: 25.5, spo2: 95, hPa: 1013 },
-            { temperatura: 26.0, spo2: 96, hPa: 1014 },
-            { temperatura: 25.8, spo2: 94, hPa: 1012 },
-        ];
-    } else if (patientId === 'patient2') {
-        patientData = [
-            { temperatura: 27.0, spo2: 97, hPa: 1012 },
-            { temperatura: 26.5, spo2: 98, hPa: 1013 },
-            { temperatura: 25.9, spo2: 96, hPa: 1011 },
-        ];
+function loadPatientData() {
+    // Obtém o valor selecionado no <select>
+    const selectedPatient = document.getElementById('patientSelect').value;
+
+    // Verifica se um paciente foi selecionado
+    if (selectedPatient) {
+        // Aqui, você deve fazer uma solicitação para obter os dados do paciente com base no valor selecionado.
+        // Isso pode ser feito usando fetch() para acessar uma API no seu backend.
+
+        // Exemplo de solicitação usando fetch:
+        fetch(`/api/pacientes/${selectedPatient}`)
+            .then(response => response.json())
+            .then(patientData => {
+                // Preenche a tabela com os dados do paciente
+                populatePatientDataTable(patientData);
+            })
+            .catch(error => {
+                console.error('Erro ao carregar dados do paciente:', error);
+            });
+    } else {
+        // Limpa a tabela se nenhum paciente for selecionado
+        clearPatientDataTable();
     }
-
-    // Chame a função para atualizar os gráficos
-    updateCharts(patientData);
 }
+
 
 // Função para atualizar os gráficos com os dados do paciente selecionado
 function updateCharts(patientData) {
@@ -351,6 +359,42 @@ function updateCharts(patientData) {
     }
 }
 
+function populatePatientDataTable(patientData) {
+    const dataList = document.getElementById('dataList');
+
+    // Limpa qualquer conteúdo anterior na tabela
+    dataList.innerHTML = '';
+
+    // Preenche a tabela com os dados do paciente
+    // Você precisará iterar sobre os dados e criar <tr> e <td> conforme necessário
+    // Por exemplo:
+    for (const dataPoint of patientData) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${dataPoint.id}</td>
+            <td>${dataPoint.temperatura}</td>
+            <td>${dataPoint.umidade}</td>
+            <td>${dataPoint.pressao}</td>
+            <td>${dataPoint.dataHora}</td>
+        `;
+        dataList.appendChild(row);
+    }
+
+    // Atualiza o nome do paciente no elemento <p>
+    document.getElementById('nomePaciente').textContent = patientData[0].nome; // Supondo que o nome esteja na primeira entrada dos dados
+}
+
+function clearPatientDataTable() {
+    const dataList = document.getElementById('dataList');
+    dataList.innerHTML = '';
+
+    // Limpa o nome do paciente
+    document.getElementById('nomePaciente').textContent = '';
+}
+
+
+// Chame a função para carregar os dados do paciente inicialmente (caso haja um paciente selecionado)
+loadPatientData();
 // Chame a função loadPatientData() para carregar os dados do paciente inicialmente
 loadPatientData(selectedPatient);
 
